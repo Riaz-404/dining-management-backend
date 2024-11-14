@@ -5,10 +5,18 @@ import {validateConfirmPassword, validateEmail, validatePassword} from "../Utils
 import {ApiResponse} from "../Utils/apiResponse.js";
 import jwt from "jsonwebtoken";
 
-const handleGetUserDetails = asyncHandler((req, res) => {
+const handleGetUserDetails = asyncHandler(async (req, res) => {
   const _id = req.query.id;
 
-  console.log(_id);
+  const user = await User.findById(_id).select("-password -refreshToken");
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User details fetch"));
 });
 
 const handleRegisterUser = asyncHandler(async (req, res) => {
