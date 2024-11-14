@@ -1,6 +1,7 @@
 import express, {urlencoded} from "express";
 import cors from "cors";
 import healthCheckRouter from "./Controllers/healthCheck.controller.js";
+import userRouter from "./Routes/user.route.js";
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use("/api/v1/health-check", healthCheckRouter);
+app.use("/api/health-check", healthCheckRouter);
+app.use("/api/user", userRouter);
 
 export default app;
