@@ -53,4 +53,30 @@ const handleRegisterUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "User created successfully"));
 });
 
-export {handleGetUserDetails, handleRegisterUser};
+
+const handleLoginUser = asyncHandler(async (req, res) => {
+  const userInfo = req.body;
+
+  // check for all fields
+  if (!userInfo.roll || !userInfo.password) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const user = await User.findOne({roll: userInfo.roll});
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const isPasswordCorrect = await user.isPasswordCorrect(userInfo.password);
+
+  if (!isPasswordCorrect) {
+    throw new ApiError(401, "Password incorrect");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Success"));
+});
+
+export {handleGetUserDetails, handleRegisterUser, handleLoginUser};

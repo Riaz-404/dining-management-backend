@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
   },
   roll: {
-    type: Number,
+    type: String,
     required: [true, "Roll no required"],
     unique: true,
     trim: true,
@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
 }, {timestamps: true});
+
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
